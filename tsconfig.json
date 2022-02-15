@@ -1,6 +1,11 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "paths": {
+      "react-native-redash/lib/module/v1": [
+        "./node_modules/react-native-redash/lib/typescript/v1/index.d.ts"
+      ]
+    }
   }
 }
