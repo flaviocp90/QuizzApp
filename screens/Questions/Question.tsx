@@ -1,4 +1,4 @@
-import { Dimensions, Text } from "react-native";
+import { Dimensions, Modal, Text } from "react-native";
 import React, { Fragment, useRef, useEffect, useState } from "react";
 import QuizContainer from "../../container/QuizContainer";
 import theme, { Box } from "../../utils/theme";
@@ -6,8 +6,19 @@ import { verticalScale, moderateScale } from "react-native-size-matters";
 import QuestionSlide from "../../components/QuestionSlide";
 import { questions } from "./data";
 import style from "./Question.style";
-import Animated, { multiply, useAnimatedRef } from "react-native-reanimated";
-import { useScrollHandler } from "react-native-redash";
+import { RootStackParamList } from "../../navigations/RootStackParams";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import Animated, {
+  multiply,
+  SpringUtils,
+  useAnimatedRef,
+  Value,
+} from "react-native-reanimated";
+import {
+  useScrollHandler,
+  useValue,
+  withSpringTransition,
+} from "react-native-redash";
 import Answers from "../../components/Answers";
 import { Button } from "../../components";
 import {
@@ -27,7 +38,9 @@ export type currAnswerObjecetProps = {
   correctAnswer: string;
 };
 
-const Question = () => {
+const Question = ({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "Question">) => {
   const { x, scrollHandler } = useScrollHandler();
   const scrollView = useRef<Animated.ScrollView>(null);
 
@@ -41,6 +54,7 @@ const Question = () => {
   const [TOTAL_QUESTIONS] = useState<number>(10);
   const [quizOver, setQuizOver] = useState<boolean>(false);
   const [scrolling, setScrolling] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const shuffleDifficulty = _([
     QuestionDifficulty.EASY,
@@ -76,12 +90,15 @@ const Question = () => {
     setQuizOver(false);
     const newQuestion = await grabQuizQuestions(
       TOTAL_QUESTIONS,
-      shuffleDifficulty[0]
+      shuffleDifficulty[1]
     );
     setAllQuestions(newQuestion);
     setScore(0);
     setUserSelectedAnswers([]);
     setqloading(false);
+    setShowModal(false);
+    setCurNum(0);
+    navigation.navigate('Welcome')
   };
 
   const nextQuestion = () => {
@@ -90,6 +107,7 @@ const Question = () => {
       setCurNum((number) => number + 1);
     } else {
       setQuizOver(true);
+      setShowModal(true);
     }
   };
 
@@ -114,9 +132,22 @@ const Question = () => {
     startJob();
   }, []);
 
+  /* Finished animation */
+  const finishedValue = useValue<number>(0);
+
+  useEffect(() => {
+    if (quizOver) {
+      finishedValue.setValue(1);
+    }
+  }, [quizOver]);
+
+  const finished = withSpringTransition(finishedValue, {
+    ...SpringUtils.makeDefaultConfig(),
+  });
+
   return (
     <QuizContainer>
-      <>
+      <Box flex={1}>
         {qloading ? (
           <View style={style.loadContainer}>
             <Text style={style.loadText}>Quiz Loading...</Text>
@@ -195,7 +226,18 @@ const Question = () => {
             </Box>
           </Box>
         )}
-      </>
+      </Box>
+
+      <Modal visible={showModal} animationType="slide"> 
+        <View style={style.modalContainer}>
+          <View style={style.modalScore}>
+            <Text>Hai risposto correttamente a {score} domande</Text>
+            <Button 
+            onPress = {startJob}
+            text="Ricomincia" />
+          </View>
+        </View>
+      </Modal>
     </QuizContainer>
   );
 };

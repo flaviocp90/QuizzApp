@@ -12,7 +12,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 const welcomeAssets = require("../../assets/images/undraw_Questions_re_1fy7.png");
 
 const Welcome = ({
-  route,
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Welcome">) => {
   return (

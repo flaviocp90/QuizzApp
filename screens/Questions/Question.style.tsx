@@ -30,26 +30,21 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: '900'
     },
-    textModal: {
-        fontSize: moderateScale(25),
-        marginBottom: 16,
-        color: 'black',
-        textAlign: 'center'
+    modalContainer: {
+        flex: 1,
+        backgroundColor: theme.colors['white'],
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    percentText: {
-        textAlign: 'center',
-        marginBottom: 16
-    },
-    modalText: {
-        fontWeight: '600',
-        textAlign: 'center',
-        marginBottom: 16
-    },
-    resultText: {
-        textAlign: 'center',
-        marginBottom: 16,
-        fontSize: 14
+    modalScore: {
+        backgroundColor: theme.colors['white'],
+        width: '90%',
+        borderRadius: 20,
+        padding: 20,
+        alignItems: 'center'
+        
     }
+
 });
 
 export default styles;
