@@ -98,7 +98,7 @@ const Question = ({
     setqloading(false);
     setShowModal(false);
     setCurNum(0);
-    navigation.navigate('Welcome')
+    navigation.navigate("Welcome");
   };
 
   const nextQuestion = () => {
@@ -131,19 +131,6 @@ const Question = ({
   useEffect(() => {
     startJob();
   }, []);
-
-  /* Finished animation */
-  const finishedValue = useValue<number>(0);
-
-  useEffect(() => {
-    if (quizOver) {
-      finishedValue.setValue(1);
-    }
-  }, [quizOver]);
-
-  const finished = withSpringTransition(finishedValue, {
-    ...SpringUtils.makeDefaultConfig(),
-  });
 
   return (
     <QuizContainer>
@@ -228,13 +215,15 @@ const Question = ({
         )}
       </Box>
 
-      <Modal visible={showModal} animationType="slide"> 
+      <Modal visible={showModal} animationType="slide">
         <View style={style.modalContainer}>
           <View style={style.modalScore}>
-            <Text>Hai risposto correttamente a {score} domande</Text>
-            <Button 
-            onPress = {startJob}
-            text="Ricomincia" />
+            <Text style={style.textScore}>
+              {" "}
+              {score > 5 ? "Complimenti!" : "Peccato!"} Hai risposto
+              correttamente a {score} domande
+            </Text>
+            <Button onPress={startJob} text="Ricomincia" />
           </View>
         </View>
       </Modal>
